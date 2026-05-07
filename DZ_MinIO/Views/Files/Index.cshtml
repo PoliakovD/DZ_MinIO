@@ -1,19 +1,52 @@
-﻿@page
-@model DZ_MinIO.Views.Files.Index
-
+﻿@model IEnumerable<DZ_MinIO.Models.FileItem>
 @{
-    Layout = null;
+    ViewData["Title"] = "Файлы в хранилище";
 }
 
-<!DOCTYPE html>
+<h2>Список файлов в бакете</h2>
 
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    
-</div>
-</body>
-</html>
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<a asp-action="Upload" class="btn btn-primary mb-3">Загрузить новый файл</a>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Имя файла</th>
+            <th>Размер (байты)</th>
+            <th>Дата изменения</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var file in Model)
+        {
+            <tr>
+                <td>@file.FileName</td>
+                <td>@file.Size</td>
+                <td>@file.LastModified.ToString()</td>
+                <td>
+                    <a asp-action="Download" asp-route-fileName="@file.FileName" class="btn btn-sm btn-secondary">Скачать</a>
+                    <form asp-action="Delete" method="post" style="display:inline">
+                        <input type="hidden" name="fileName" value="@file.FileName" />
+                        <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>В бакете пока нет файлов.</p>
+}

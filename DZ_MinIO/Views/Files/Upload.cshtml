@@ -1,19 +1,22 @@
-﻿@page
-@model DZ_MinIO.Views.Files.Uploa
-
-@{
-    Layout = null;
+﻿@{
+    ViewData["Title"] = "Загрузить файл";
 }
 
-<!DOCTYPE html>
+<h2>Загрузка файла в MinIO</h2>
 
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    
-</div>
-</body>
-</html>
+<form asp-action="Upload" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="file" class="form-label">Выберите файл</label>
+        <input type="file" class="form-control" id="file" name="file" />
+        @Html.ValidationMessage("file", new { @class = "text-danger" })
+    </div>
+    <button type="submit" class="btn btn-success">Загрузить</button>
+    <a asp-action="Index" class="btn btn-secondary">Назад</a>
+</form>
+
+@if (!ViewContext.ModelState.IsValid)
+{
+    <div class="alert alert-danger mt-3">
+        <div asp-validation-summary="All"></div>
+    </div>
+}
